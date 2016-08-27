@@ -1,6 +1,7 @@
 ---
   letsencrypt_src_directory: /usr/local/share/letsencrypt
   letsencrypt_venv: "{{ letsencrypt_src_directory }}/env"
+  letsencrypt_renewal_file: /etc/letsencrypt/renewal/{{ letsencrypt_cert.domains[0] }}.conf
   letsencrypt_certs:
     - domains:
       - "{{ ansible_fqdn }}"

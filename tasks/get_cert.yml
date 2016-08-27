@@ -17,8 +17,13 @@
     args:
       creates: "/etc/letsencrypt/live/{{ letsencrypt_cert.domains[0] }}"
 
+  - name: "{{ letsencrypt_cert.domains[0] }}: Check if renewal file was created"
+    file: dest="{{ letsencrypt_renewal_file }}" state=file
+    register: letsencrypt_renewal_file_exists
+
   - name: "{{ letsencrypt_cert.domains[0] }}: Fix the renewal file"
-    ini_file: section=renewalparams option={{ item.key }} value={{ item.value }} dest="/etc/letsencrypt/renewal/{{ letsencrypt_cert.domains[0] }}.conf"
+    ini_file: section=renewalparams option={{ item.key }} value={{ item.value }} dest="{{ letsencrypt_renewal_file }}"
+    when: letsencrypt_renewal_file_exists
     become: yes
     with_dict:
       os_packages_only: False
@@ -29,6 +34,7 @@
       authenticator: '{{ letsencrypt_authenticator }}'
 
   - name: "{{ letsencrypt_cert.domains[0] }}: Fix the webroot map in the renewal file"
-    ini_file: section="[webroot_map]" option={{ item }} value={{ letsencrypt_webroot_path }} dest="/etc/letsencrypt/renewal/{{ letsencrypt_cert.domains[0] }}.conf"
+    ini_file: section="[webroot_map]" option={{ item }} value={{ letsencrypt_webroot_path }} dest="{{ letsencrypt_renewal_file }}"
+    when: letsencrypt_renewal_file_exists
     become: yes
     with_items: "{{ letsencrypt_cert.domains }}"

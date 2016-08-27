@@ -37,7 +37,7 @@
     tags: install
 
   - name: Install python depends
-    pip: virtualenv="{{ letsencrypt_venv }}" virtualenv_site_packages=no name={{ item }} state=latest virtualenv_python=python2
+    pip: virtualenv="{{ letsencrypt_venv }}" virtualenv_site_packages=no name={{ item }} state=present virtualenv_python=python2
     become: yes
     with_items:
       - setuptools
@@ -45,7 +45,7 @@
     tags: install
 
   - name: More python depends
-    pip: virtualenv="{{ letsencrypt_venv }}" virtualenv_site_packages=no name=letsencrypt state=latest
+    pip: virtualenv="{{ letsencrypt_venv }}" virtualenv_site_packages=no name=letsencrypt state=present
     become: yes
     tags: install
 

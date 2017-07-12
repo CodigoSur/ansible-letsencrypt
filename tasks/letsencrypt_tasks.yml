@@ -9,6 +9,16 @@
     become: yes
     tags: install
 
+  - name: Ensure nginx is reloaded after certbot renew via cli or cron
+    become: yes
+    tags: install
+    lineinfile:
+      dest: "/etc/letsencrypt/cli.ini"
+      state: present
+      regexp: "^post-hook"
+      line: "post-hook = /etc/init.d/nginx reload"
+      create: yes
+
   - name: Get certificates for all domain groups
     include: get_cert.yml
     with_items: "{{ letsencrypt_certs }}"
